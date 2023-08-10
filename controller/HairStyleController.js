@@ -25,15 +25,14 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
 })
-
-
-const hairPath = process.env.HAIR_PATH
-const generatedHairPath = resolve(process.env.GENERATED_HAIR_PATH)
-const unprocessed_dir = resolve(process.env.UNPROCESSED_DIR)
-const gen_hair_batch_dir = process.env.GEN_HAIR_BATCH_DIR
-const process_face_script_dir = resolve(process.env.PROCESS_FACE_SCRIPT_DIR)
-const generate_hair_script_dir = resolve(process.env.GENERATE_HAIR_SCRIPT_DIR)
-const hair_ai_engine_dir = resolve(process.env.HAIR_AI_ENGINE_DIR)
+const conda_env = 'shair'
+// const conda_env = 'thesis-env'
+const hairPath = '../Hair-AI-Engine/StyleYourHair/ffhq_image'
+const generatedHairPath = resolve('../Hair-AI-Engine/StyleYourHair/style_your_hair_output')
+const unprocessed_dir = resolve('../Hair-AI-Engine/StyleYourHair/unprocessed')
+const process_face_script_dir = resolve('../Hair-AI-Engine/StyleYourHair/process_image_script.py')
+const generate_hair_script_dir = resolve('../Hair-AI-Engine/StyleYourHair/generate_hair_script.py')
+const hair_ai_engine_dir = resolve('../Hair-AI-Engine/StyleYourHair')
 
 
 export async function GenerateHair (req, res){
