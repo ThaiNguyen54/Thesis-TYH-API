@@ -27,8 +27,6 @@ cloudinary.config({
 })
 
 
-// const conda_env = 'shair'
-const conda_env = process.env.CONDA_ENV
 const hairPath = process.env.HAIR_PATH
 const generatedHairPath = resolve(process.env.GENERATED_HAIR_PATH)
 const unprocessed_dir = resolve(process.env.UNPROCESSED_DIR)
@@ -36,6 +34,8 @@ const gen_hair_batch_dir = process.env.GEN_HAIR_BATCH_DIR
 const process_face_script_dir = resolve(process.env.PROCESS_FACE_SCRIPT_DIR)
 const generate_hair_script_dir = resolve(process.env.GENERATE_HAIR_SCRIPT_DIR)
 const hair_ai_engine_dir = resolve(process.env.HAIR_AI_ENGINE_DIR)
+
+
 export async function GenerateHair (req, res){
     let no_extension_HairstyleName = req.body.HairstyleName
     let no_extension_ImageName = req.body.ImageName
