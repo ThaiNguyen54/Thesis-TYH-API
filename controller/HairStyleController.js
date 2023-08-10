@@ -7,7 +7,17 @@ import 'dotenv/config'
 import fs from "fs"
 import {resolve} from 'path'
 import {spawn} from 'child_process'
+import {initializeApp, cert} from 'firebase-admin/app'
+import * as admin from 'firebase-admin'
+import serviceAccount from '../admin_token/tryyourhair-835d2-firebase-adminsdk-jgbxc-4c3db75647.json' assert {type: 'json'}
+import {getMessaging} from "firebase-admin/messaging";
+import {response} from "express";
 
+
+// Initialize firebase
+initializeApp({
+    credential: cert(serviceAccount)
+})
 
 // Cloudinary Config
 cloudinary.config({
@@ -20,16 +30,19 @@ cloudinary.config({
 // const conda_env = 'shair'
 const conda_env = 'thesis-env'
 const hairPath = '../Hair-AI-Engine/StyleYourHair/ffhq_image'
+const generatedHairPath = resolve('../Hair-AI-Engine/StyleYourHair/style_your_hair_output')
 const unprocessed_dir = resolve('../Hair-AI-Engine/StyleYourHair/unprocessed')
 const gen_hair_batch_dir = '../Hair-AI-Engine/StyleYourHair/gen_hair.bat'
 const process_face_script_dir = resolve('../Hair-AI-Engine/StyleYourHair/process_image_script.py')
 const generate_hair_script_dir = resolve('../Hair-AI-Engine/StyleYourHair/generate_hair_script.py')
 const hair_ai_engine_dir = resolve('../Hair-AI-Engine/StyleYourHair')
 export async function GenerateHair (req, res){
+    let no_extension_HairstyleName = req.body.HairstyleName
+    let no_extension_ImageName = req.body.ImageName
     let HairstyleName = req.body.HairstyleName + '.png'
     let ImageName = req.body.ImageName + '.png'
     let ImageBase64 = req.body.ImageBase64
-    let RegistrationToken = req.body.RegistrationToken
+    let RegistrationToken = req.body.RegistrationToken.toString()
     let buffer = new Buffer(ImageBase64, 'base64')
 
     // Save user image to unprocessed folder
@@ -58,7 +71,7 @@ export async function GenerateHair (req, res){
             console.log(outputData)
         })
 
-        pythonProcessFace.stderr.on('dat', (data) => {
+        pythonProcessFace.stderr.on('data', (data) => {
             console.log(`Python script error: ${data}`)
         })
 
@@ -68,8 +81,7 @@ export async function GenerateHair (req, res){
 
             const generateHairProcess = spawn(
                 'conda',
-                ['run', '-n', conda_env, 'python', 'test.py', '-n1', 'asdfasd', '-n2', 'asdfasd'],
-                // ['run', '-n', conda_env, 'python', generate_hair_script_dir, '--input_dir', './ffhq_image/', '--im_path1', ImageName, '--im_path2', HairstyleName, '--output_dir', './style_your_hair_output', '--warp_loss_with_prev_list', 'delta_w style_hair_slic_large', '--save_all', '--version final', '--W_steps 450', '--FS_steps', '50', '--align_steps1', '50', '--align_steps2', '25', '--warp_steps', '100'],
+                ['run', '-n', conda_env, 'python', generate_hair_script_dir, '--image_name', ImageName, '--hairstyle_name', HairstyleName],
                 {cwd: hair_ai_engine_dir}
             )
 
@@ -78,8 +90,39 @@ export async function GenerateHair (req, res){
                 console.log(outputData)
             })
 
-            generateHairProcess.stderr.on('dat', (data) => {
+            generateHairProcess.stderr.on('data', (data) => {
                 console.log(`Python script error: ${data}`)
+            })
+
+            generateHairProcess.on('close', (code) => {
+                cloudinary.uploader.upload(generatedHairPath + '/' + no_extension_ImageName + "_" + no_extension_HairstyleName + '.png',
+                    {folder: 'Generated Hair'},
+                    function (error, result) {
+                        if(error) {
+                            console.log(error)
+                        } else {
+                            console.log(result.url)
+
+                            const message = {
+                                data: {
+                                    GeneratedImageURL: result.url
+                                },
+                                token: RegistrationToken
+                            }
+
+                            getMessaging().send(message)
+                                .then((response) => {
+                                    console.log('Successfully sent message:', response)
+                                })
+                                .catch((error) => {
+                                    console.log('Error sending message:', error)
+                                })
+
+                            res.send({
+                                GeneratedImageURL: result.url
+                            })
+                        }
+                    })
             })
         })
     } catch (e) {
