@@ -24,7 +24,7 @@ mongoose.connect(MongoConfig.mongodb.THAI_uri);
 
 let port = process.env.PORT;
 if (port == null || port === "") {
-    port = 7000;
+    port = 7001;
 }
 
 app.listen(port, () => {
