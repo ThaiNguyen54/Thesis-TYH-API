@@ -195,7 +195,6 @@ export async function AddHairStyle(req, res) {
 }
 
 export function GetAllHairStyle(req, res) {
-    res.set('Access-Control-Allow-Origin', '*')
     hairstyle.find()
         .select('Url Des Name')
         .then(allHairStyle => {

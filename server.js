@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.use('/', cors())
+app.use(cors())
 app.use(hairstyleroute)
 
 // Connect to mongodb
@@ -29,17 +30,17 @@ if (port == null || port === "") {
     port = 7001;
 }
 
-https.createServer({
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-},app)
-    .listen(port, () => {
-        console.log(`Server is running on port ${port}`)
-    })
+// https.createServer({
+//     key: fs.readFileSync('key.pem'),
+//     cert: fs.readFileSync('cert.pem')
+// },app)
+//     .listen(port, () => {
+//         console.log(`Server is running on port ${port}`)
+//     })
 
 
-// app.listen(port, () => {
-//     console.log(`Server is running on port ${port}`)
-// })
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+})
 
 
