@@ -173,7 +173,7 @@ export async function AddHairStyle(req, res) {
                         console.log(error)
                     } else {
                         await util.DownloadImage(result.url, hairPath + '/' + file_name + '.png')
-                        req.body.Url = result.url
+                        req.body.Url = result.secure_url
                         const NewHairStyle = new hairstyle(req.body);
                         const HairStyleInsertData =  await hairstyle.insertMany(NewHairStyle);
                         if(!HairStyleInsertData) {
