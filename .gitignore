@@ -4,3 +4,5 @@ package-lock.json
 admin_token/
 .env
 admin_token
+key.pem
+*.pem

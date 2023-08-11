@@ -2,8 +2,10 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import https from 'https'
 import MongoConfig from './configs/MongoConfig.js'
 import hairstyleroute from './route/HairStyleRoute.js'
+import fs from "fs";
 
 const app = express()
 
@@ -27,8 +29,19 @@ if (port == null || port === "") {
     port = 7001;
 }
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+https.createServer({
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+},app)
+    .listen(port, () => {
+        console.log(`Server is running on port ${port}`)
+    })
+
+app.get('/', (req, res) => {
+    res.send('hello from express server')
 })
+// app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`)
+// })
 
 
