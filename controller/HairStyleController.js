@@ -161,25 +161,46 @@ async function UploadImage(req, res) {
 
 export async function AddHairStyle(req, res) {
     try {
-        console.log(req.file)
-
         const b64 = Buffer.from(req.file.buffer).toString("base64")
+        let buffer = new Buffer(b64, 'base64')
         let dataURI = "data:" + req.file.mimetype + ";base64," + b64
-        let file_name = util.removeExtension(req.file.originalname)
-        await cloudinary.uploader.upload(dataURI,
-            {folder: 'StyleYourHair', resource_type: 'auto', public_id: file_name},
-            async function (error, result) {
+        let file_name = util.removeExtension(req.body.Name)
+        fs.writeFileSync(unprocessed_dir + '/' + file_name + '.png', buffer, (error) => {
+            if (error) {
+                console.log(error)
+            } else {
+                console.log('saved')
+            }
+        })
+        const pythonProcessFace = spawn(
+            'conda',
+            ['run', '-n', conda_env, 'python', process_face_script_dir],
+            {cwd: hair_ai_engine_dir})
+
+        pythonProcessFace.stdout.on('data', (data) => {
+            const outputData = data.toString().trim()
+            console.log(outputData)
+        })
+
+        pythonProcessFace.stderr.on('data', (data) => {
+            console.log(`Python script error: ${data}`)
+        })
+
+        pythonProcessFace.on('close', async (code) => {
+            console.log(`Python script exited with code ${code}`)
+            await cloudinary.uploader.upload(hairPath + '/' + file_name + '.png',
+                {folder: 'StyleYourHair', resource_type: 'auto', public_id: file_name},
+                async function (error, result) {
                     if (error) {
                         console.log(error)
                     } else {
-                        await util.DownloadImage(result.url, hairPath + '/' + file_name + '.png')
+                        // await util.DownloadImage(result.url, hairPath + '/' + file_name + '.png')
                         req.body.Url = result.secure_url
                         const NewHairStyle = new hairstyle(req.body);
-                        const HairStyleInsertData =  await hairstyle.insertMany(NewHairStyle);
-                        if(!HairStyleInsertData) {
+                        const HairStyleInsertData = await hairstyle.insertMany(NewHairStyle);
+                        if (!HairStyleInsertData) {
                             throw new Error('Can not insert new hairstyle');
-                        }
-                        else {
+                        } else {
                             return res.json({
                                 success: true,
                                 message: "inserted new hairstyle",
@@ -187,9 +208,13 @@ export async function AddHairStyle(req, res) {
                             })
                         }
                     }
-            }
-        )
+                }
+            )
+        })
+
+
     } catch (error) {
+        console.log(error)
         return res.status(404).send(error)
     }
 }
