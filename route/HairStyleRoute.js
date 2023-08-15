@@ -8,7 +8,7 @@ const upload = multer({
 })
 const router = express.Router()
 router.post("/ver1/generate_hair", HairStyleControl.GenerateHair)
-router.post("/ver1/hairstyle/", upload.single('my_file', 'imgInfo'), HairStyleControl.AddHairStyle)
+router.post("/ver1/hairstyle", upload.single('my_file', 'imgInfo'), HairStyleControl.AddHairStyle)
 router.get("/ver1/hairstyle", HairStyleControl.GetAllHairStyle)
 router.delete("/ver1/hairstyle/:HairstyleID", HairStyleControl.DeleteHairstyle)
 router.put("/ver1/hairstyle/:HairstyleID", upload.single('my_file', 'isUpdateImage', 'edit_data'), HairStyleControl.UpdateHairstyle)
