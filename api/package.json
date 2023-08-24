@@ -2,12 +2,12 @@
   "name": "mobile-dev-final-project-api",
   "version": "1.0.0",
   "description": "api for TryYourHair application",
-  "main": "server.js",
+  "main": "index.js",
   "type": "module",
   "proxy": "https://demo.wetop.me",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "author": "ThaiNguyen",
   "license": "ISC",
