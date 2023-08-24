@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "api for TryYourHair application",
   "main": "server.js",
+  "engines": {
+    "node": "14.x"
+  },
   "type": "module",
   "proxy": "https://demo.wetop.me",
   "scripts": {
