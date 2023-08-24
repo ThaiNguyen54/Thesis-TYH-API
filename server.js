@@ -3,7 +3,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import https from 'https'
-import MongoConfig from './configs/MongoConfig.js'
+import MongoConfig from './configs/mongoconfig.js'
 import hairstyleroute from './route/HairStyleRoute.js'
 import fs from "fs";
 

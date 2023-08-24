@@ -1,5 +1,5 @@
-import hairstyle from "../models/HairStyle.js";
-import * as HairstyleManagement from '../management/HairstyleManagement.js'
+import hairstyle from "../models/hairstyle.js";
+import * as HairstyleManagement from '../management/hairstylemanagement.js'
 import * as Rest from '../utils/Rest.js'
 import * as util from '../utils/UtilFunctions.js'
 import {v2 as cloudinary} from 'cloudinary'

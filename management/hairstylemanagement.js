@@ -1,6 +1,6 @@
 import * as util from '../utils/UtilFunctions.js'
 import Validator from 'validator'
-import HairStyle from "../models/HairStyle.js";
+import HairStyle from "../models/hairstyle.js";
 
 export function Delete (HairstyleID, callback) {
     try {

@@ -1,5 +1,5 @@
 import express from "express";
-import * as HairStyleControl from "../controller/HairStyleController.js";
+import * as HairStyleControl from "../controller/hairstylecontroller.js";
 import multer from "multer";
 
 const storage = new multer.memoryStorage()
