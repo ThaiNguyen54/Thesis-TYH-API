@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a9dad207-7f16-4799-b2ba-2a477f990825" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2Pdpvwb8HNLHOZb65jQc08ZFUz2" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "vercel-deployement",
+    "javascript.nodejs.core.library.configured.version": "19.8.1",
+    "javascript.nodejs.core.library.typings.version": "20.4.8",
+    "last_opened_file_path": "D:/Study/Thesis/Thesis-TYH-Admin-UI-local",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Study\Cirriculums\Mobile Developement\TT\Thesis class\Final Project\AI-Engine\StyleYourHair" />
+      <recent name="D:\Study\Cirriculums\Mobile Developement\TT\Thesis class\Final Project\Test\TCP server" />
+      <recent name="D:\Study\Cirriculums\IoT\TT\Practice class\Exercises\TH1.09-19522188-19522409-19522362\Lab4 exercises\Lab4-Ex4" />
+      <recent name="D:\Study\Cirriculums\IoT\TT\Practice class\Exercises\TH1.09-19522188-19522409-19522362\Lab4 exercises\Ex2-Ex3-Ex4\API server" />
+      <recent name="D:\Study\Cirriculums\Mobile Developement\TT\Thesis class\Final Project\Mobile-Dev-Final-Project-API" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a9dad207-7f16-4799-b2ba-2a477f990825" name="Changes" comment="" />
+      <created>1683797047344</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1683797047344</updated>
+      <workItem from="1683797048287" duration="1769000" />
+      <workItem from="1683811663750" duration="5299000" />
+      <workItem from="1683851076495" duration="628000" />
+      <workItem from="1683852620612" duration="1200000" />
+      <workItem from="1683895972676" duration="1625000" />
+      <workItem from="1684076667029" duration="687000" />
+      <workItem from="1684236269054" duration="8497000" />
+      <workItem from="1684254402381" duration="464000" />
+      <workItem from="1684254877257" duration="2361000" />
+      <workItem from="1684325947762" duration="1809000" />
+      <workItem from="1684370963315" duration="6189000" />
+      <workItem from="1684503642873" duration="1553000" />
+      <workItem from="1684573827566" duration="2686000" />
+      <workItem from="1684576578731" duration="3086000" />
+      <workItem from="1684582284602" duration="934000" />
+      <workItem from="1684585019995" duration="834000" />
+      <workItem from="1684597710505" duration="638000" />
+      <workItem from="1684626547434" duration="30993000" />
+      <workItem from="1684714329257" duration="2508000" />
+      <workItem from="1684733289715" duration="8503000" />
+      <workItem from="1691422669130" duration="1580000" />
+      <workItem from="1691564038816" duration="13000" />
+      <workItem from="1691638987631" duration="6518000" />
+      <workItem from="1691648943674" duration="8000" />
+      <workItem from="1691661052167" duration="1814000" />
+      <workItem from="1691720302149" duration="602000" />
+      <workItem from="1691727304869" duration="510000" />
+      <workItem from="1691732891892" duration="3080000" />
+      <workItem from="1691745785682" duration="1636000" />
+      <workItem from="1691754906112" duration="1468000" />
+      <workItem from="1691993064679" duration="1615000" />
+      <workItem from="1692006612362" duration="1347000" />
+      <workItem from="1692074928678" duration="8970000" />
+      <workItem from="1692767247950" duration="114000" />
+      <workItem from="1692767369944" duration="2176000" />
+      <workItem from="1692875781501" duration="6605000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
