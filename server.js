@@ -36,7 +36,7 @@ mongoose.connect(MongoConfig.mongodb.THAI_uri);
 
 let port = process.env.PORT;
 if (port == null || port === "") {
-    port = 7001;
+    port = 3000;
 }
 
 // https.createServer({
