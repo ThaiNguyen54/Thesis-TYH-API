@@ -104,7 +104,7 @@ export async function GenerateHair (req, res){
 
                             const message = {
                                 data: {
-                                    GeneratedImageURL: result.url
+                                    GeneratedImageURL: result.secure_url
                                 },
                                 token: RegistrationToken
                             }
