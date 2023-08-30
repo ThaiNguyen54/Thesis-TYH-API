@@ -25,8 +25,8 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
 })
-const conda_env = 'shair'
-// const conda_env = 'thesis-env'
+// const conda_env = 'shair'
+const conda_env = 'thesis-env'
 const hairPath = '../Hair-AI-Engine/StyleYourHair/ffhq_image'
 const generatedHairPath = resolve('../Hair-AI-Engine/StyleYourHair/style_your_hair_output')
 const unprocessed_dir = resolve('../Hair-AI-Engine/StyleYourHair/unprocessed')
@@ -256,32 +256,106 @@ export function DeleteHairstyle (req, res) {
 export async function UpdateHairstyle(req, res) {
     let id = req.params.HairstyleID || '';
     let data = req.body || '';
+    let old_name = req.body.old_name
     const isUpdateImage = req.body.isUpdateImage
     const updateData = JSON.parse(req.body.update)
-    // console.log(req)
+
+    // console.log(req.body)
+    // console.log(isUpdateImage)
+    // console.log(updateData.Name)
+
+    if (updateData.Name !== undefined) {
+        fs.renameSync(hairPath + '/' + old_name + '.png', hairPath + '/' + updateData.Name + '.png')
+    }
 
     if (isUpdateImage === 'true') {
         try {
             const b64 = Buffer.from(req.file.buffer).toString('base64')
+            let buffer = new Buffer(b64, 'base64')
             let dataURI = 'data:' + req.file.mimetype + ';base64,' + b64
-            let file_name = util.removeExtension(req.file.originalname)
-            const cldRes = await handleUpload(dataURI, file_name)
-            updateData.Url = cldRes.url
-            await util.DownloadImage(cldRes.url, hairPath + '\\' + file_name + '.png')
+            // let file_name = util.removeExtension(req.file.originalname)
+            let file_name = old_name
+            let name_for_saving = file_name
+            if (updateData.Name !== undefined) {
+               name_for_saving = updateData.Name
+            }
+            fs.writeFileSync(unprocessed_dir + '/' + name_for_saving + '.png', buffer, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+                    console.log('saved')
+                }
+            })
+
+            const pythonProcessFace = spawn(
+                'conda',
+                ['run', '-n', conda_env, 'python', process_face_script_dir],
+                {cwd: hair_ai_engine_dir})
+
+            pythonProcessFace.stderr.on('data', (data) => {
+                console.log(`Python script error: ${data}`)
+            })
+
+            pythonProcessFace.on('close', async (code) => {
+                console.log(`Python script exited with code ${code}`)
+                await cloudinary.uploader.upload(hairPath + '/' + name_for_saving + '.png',
+                    {folder: 'StyleYourHair', resource_type: 'auto', public_id: name_for_saving},
+                    async function (error, result) {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            updateData.Url = result.secure_url
+                            let image_path = hairPath + '/' + file_name + '.png'
+                            console.log(image_path)
+                            if (fs.existsSync(image_path)) {
+                                await fs.unlink(image_path, (err) => {
+                                    if (err) {
+                                        console.log(err)
+                                        return res.send({
+                                            message: err.message
+                                        })
+                                    }
+                                })
+                                console.log('File deleted successfully')
+                            } else {
+                                console.log('File not found')
+                            }
+
+                            await util.DownloadImage(result.secure_url, image_path)
+
+                            HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+                                if (errorCode) {
+                                    return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
+                                }
+                                let outResultData = {};
+                                outResultData.id = result._id;
+                                return Rest.SendSuccess(res, outResultData, httpCode, 'Updated a hairstyle');
+                            })
+                        }
+                    }
+                )
+            })
+            // const cldRes = await handleUpload(dataURI, file_name)
+            // updateData.Url = cldRes.secure_url
+
         } catch (error) {
-            res.send({
+            return res.send({
                 message: error.message
             })
         }
     }
 
-    HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
-        if (errorCode) {
-            return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
-        }
-        let outResultData = {};
-        outResultData.id = result._id;
-        return Rest.SendSuccess(res, outResultData, httpCode, 'Updated a hairstyle');
-    })
+    if (isUpdateImage === 'false') {
+        HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+            if (errorCode) {
+                return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
+            }
+            let outResultData = {};
+            outResultData.id = result._id;
+            return Rest.SendSuccess(res, outResultData, httpCode, 'Updated a hairstyle');
+        })
+    }
+
+
     // console.log(updateData)
 }
