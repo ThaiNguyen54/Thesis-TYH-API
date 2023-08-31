@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import {INTEGER} from "sequelize";
 
 let Schema = mongoose.Schema
 const HairStyleSchema = new mongoose.Schema({
@@ -13,6 +14,9 @@ const HairStyleSchema = new mongoose.Schema({
     Des: {
         type: String,
         required: true
+    },
+    Trending: {
+        type: Number
     }
 }, {
     collection: 'HairStyle',

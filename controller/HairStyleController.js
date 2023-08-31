@@ -25,8 +25,8 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
 })
-// const conda_env = 'shair'
-const conda_env = 'thesis-env'
+const conda_env = 'shair'
+// const conda_env = 'thesis-env'
 const hairPath = '../Hair-AI-Engine/StyleYourHair/ffhq_image'
 const generatedHairPath = resolve('../Hair-AI-Engine/StyleYourHair/style_your_hair_output')
 const unprocessed_dir = resolve('../Hair-AI-Engine/StyleYourHair/unprocessed')
@@ -221,7 +221,6 @@ export async function AddHairStyle(req, res) {
 
 export function GetAllHairStyle(req, res) {
     hairstyle.find()
-        .select('Url Des Name')
         .then(allHairStyle => {
             return res.status(200).json({
                 success: true,
