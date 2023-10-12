@@ -12,5 +12,5 @@ router.post("/ver1/hairstyle", upload.single('my_file', 'imgInfo'), HairStyleCon
 router.get("/ver1/hairstyle", HairStyleControl.GetAllHairStyle)
 router.delete("/ver1/hairstyle/:HairstyleID", HairStyleControl.DeleteHairstyle)
 router.put("/ver1/hairstyle/:HairstyleID", upload.single('my_file', 'isUpdateImage', 'edit_data'), HairStyleControl.UpdateHairstyle)
-
+router.put("/ver1/hairstyle/trending/:HairstyleID", HairStyleControl.SetTrending)
 export default router;

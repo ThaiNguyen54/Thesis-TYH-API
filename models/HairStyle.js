@@ -17,6 +17,12 @@ const HairStyleSchema = new mongoose.Schema({
     },
     Trending: {
         type: Number
+    },
+    Celeb: {
+        type: String
+    },
+    Category: {
+        type: String
     }
 }, {
     collection: 'HairStyle',

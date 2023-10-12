@@ -12,6 +12,7 @@ import * as admin from 'firebase-admin'
 import serviceAccount from '../admin_token/tryyourhair-835d2-firebase-adminsdk-jgbxc-4c3db75647.json' assert {type: 'json'}
 import {getMessaging} from "firebase-admin/messaging";
 import {response} from "express";
+import HairStyle from "../models/HairStyle.js";
 
 
 // Initialize firebase
@@ -252,16 +253,47 @@ export function DeleteHairstyle (req, res) {
     })
 }
 
+export async function SetTrending(req, res) {
+    try {
+        console.log('ok')
+        let id = req.params.HairstyleID || ''
+        let Trending = req.body.Trending || 0
+        let updateData = {Trending: Trending}
+        const options = {new: true}
+        const result = await HairStyle.findByIdAndUpdate(
+            id, updateData, options
+        )
+        return res.status(200).json({
+            success: true,
+            message: 'update hairstyle successfully',
+            Hairstyle: result
+        });
+    } catch (error) {
+        return (
+            res.status(500).json({
+                success: false,
+                code: 8,
+                message: 'Can not update hairstyles. Please try again.',
+                description: error.message
+            })
+        )
+    }
+
+
+
+}
+
 export async function UpdateHairstyle(req, res) {
     let id = req.params.HairstyleID || '';
     let data = req.body || '';
     let old_name = req.body.old_name
-    const isUpdateImage = req.body.isUpdateImage
+    const isUpdateImage = req.body.isUpdateImage || 'false'
     const updateData = JSON.parse(req.body.update)
+    console.log(req)
 
     // console.log(req.body)
     // console.log(isUpdateImage)
-    // console.log(updateData.Name)
+    console.log(updateData.Name)
 
     if (updateData.Name !== undefined) {
         fs.renameSync(hairPath + '/' + old_name + '.png', hairPath + '/' + updateData.Name + '.png')
@@ -355,6 +387,7 @@ export async function UpdateHairstyle(req, res) {
         })
     }
 
-
     // console.log(updateData)
 }
+
+
