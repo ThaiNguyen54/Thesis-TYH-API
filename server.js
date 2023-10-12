@@ -6,6 +6,8 @@ import https from 'https'
 import MongoConfig from './configs/MongoConfig.js'
 import hairstyleroute from './route/HairStyleRoute.js'
 import fs from "fs";
+import AdminRoute from "./route/AdminRoute.js";
+import Admin from "./models/admin.js";
 
 const app = express()
 
@@ -30,6 +32,7 @@ const corsOption = {
 app.use(cors(corsOption))
 
 app.use(hairstyleroute)
+app.use(AdminRoute)
 
 // Connect to mongodb
 mongoose.connect(MongoConfig.mongodb.THAI_uri);
@@ -39,15 +42,15 @@ if (port == null || port === "") {
     port = 7001;
 }
 
-https.createServer({
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-},app)
-    .listen(port, () => {
-        console.log(`Server is running on port ${port}`)
-    })
+// https.createServer({
+//     key: fs.readFileSync('key.pem'),
+//     cert: fs.readFileSync('cert.pem')
+// },app)
+//     .listen(port, () => {
+//         console.log(`Server is running on port ${port}`)
+//     })
 
 
-// app.listen(port, () => {
-//     console.log(`Server is running on port ${port}`)
-// })
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+})
