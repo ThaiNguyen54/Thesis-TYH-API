@@ -42,6 +42,25 @@ if (port == null || port === "") {
     port = 7001;
 }
 
+const server = https.createServer({
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+}, app)
+
+server.on('listening', () => {
+    console.log(`Server is running on port ${port}`)
+})
+
+server.on('secureConnection', (tlsSocket) => {
+    tlsSocket.on('secure', (tlsConnection) => {
+        if (tlsConnection.authorized === false) {
+            console.log('Certificate validation error:', tlsConnection.authorizationError)
+        }
+    })
+})
+
+server.listen(port)
+
 // https.createServer({
 //     key: fs.readFileSync('key.pem'),
 //     cert: fs.readFileSync('cert.pem')
@@ -51,6 +70,6 @@ if (port == null || port === "") {
 //     })
 
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+// app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`)
+// })
