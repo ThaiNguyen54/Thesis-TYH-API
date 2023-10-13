@@ -290,10 +290,8 @@ export async function UpdateHairstyle(req, res) {
     const isUpdateImage = req.body.isUpdateImage || 'false'
     const updateData = JSON.parse(req.body.update)
     console.log(req)
-
     // console.log(req.body)
     // console.log(isUpdateImage)
-    console.log(updateData.Name)
 
     if (updateData.Name !== undefined) {
         fs.renameSync(hairPath + '/' + old_name + '.png', hairPath + '/' + updateData.Name + '.png')

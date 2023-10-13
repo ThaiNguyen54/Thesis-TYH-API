@@ -53,6 +53,12 @@ export function Update (HairstyleID, UpdateData, callback) {
                  if (util.VariableTypeChecker(UpdateData.Des, 'string')) {
                      update.Des = UpdateData.Des;
                  }
+                 if (util.VariableTypeChecker(UpdateData.Celeb, 'string')) {
+                     update.Celeb = UpdateData.Celeb
+                 }
+                 if (util.VariableTypeChecker(UpdateData.Category, 'string')) {
+                     update.Category = UpdateData.Category
+                 }
 
                  HairStyle.findOneAndUpdate(query, update, options, function (error, updatedHairstyle) {
                      if (error) {
