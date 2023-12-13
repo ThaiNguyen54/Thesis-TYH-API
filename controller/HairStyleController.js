@@ -163,7 +163,7 @@ async function UploadImage(req, res) {
 
 export async function AddHairStyle(req, res) {
     try {
-        if (Constant.ALLOWED_IMAGE_TYPE.includes(req.file.mimeType)) {
+        if (Constant.ALLOWED_IMAGE_TYPE.includes(req.file.mimetype)) {
             const b64 = Buffer.from(req.file.buffer).toString("base64")
             let buffer = new Buffer(b64, 'base64')
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64
