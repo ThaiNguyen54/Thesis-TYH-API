@@ -13,6 +13,7 @@ import serviceAccount from '../admin_token/tryyourhair-835d2-firebase-adminsdk-j
 import {getMessaging} from "firebase-admin/messaging";
 import {response} from "express";
 import HairStyle from "../models/HairStyle.js";
+import Constant from "../utils/Constant.js";
 
 
 // Initialize firebase
@@ -26,8 +27,8 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
 })
-const conda_env = 'shair'
-// const conda_env = 'thesis-env'
+// const conda_env = 'shair'
+const conda_env = 'thesis-env'
 const hairPath = '../Hair-AI-Engine/StyleYourHair/ffhq_image'
 const generatedHairPath = resolve('../Hair-AI-Engine/StyleYourHair/style_your_hair_output')
 const unprocessed_dir = resolve('../Hair-AI-Engine/StyleYourHair/unprocessed')
@@ -162,58 +163,63 @@ async function UploadImage(req, res) {
 
 export async function AddHairStyle(req, res) {
     try {
-        const b64 = Buffer.from(req.file.buffer).toString("base64")
-        let buffer = new Buffer(b64, 'base64')
-        let dataURI = "data:" + req.file.mimetype + ";base64," + b64
-        let file_name = util.removeExtension(req.body.Name)
-        fs.writeFileSync(unprocessed_dir + '/' + file_name + '.png', buffer, (error) => {
-            if (error) {
-                console.log(error)
-            } else {
-                console.log('saved')
-            }
-        })
-        const pythonProcessFace = spawn(
-            'conda',
-            ['run', '-n', conda_env, 'python', process_face_script_dir],
-            {cwd: hair_ai_engine_dir})
+        if (Constant.ALLOWED_IMAGE_TYPE.includes(req.file.mimeType)) {
+            const b64 = Buffer.from(req.file.buffer).toString("base64")
+            let buffer = new Buffer(b64, 'base64')
+            let dataURI = "data:" + req.file.mimetype + ";base64," + b64
+            let file_name = util.removeExtension(req.body.Name)
+            fs.writeFileSync(unprocessed_dir + '/' + file_name + '.png', buffer, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+                    console.log('saved')
+                }
+            })
+            const pythonProcessFace = spawn(
+                'conda',
+                ['run', '-n', conda_env, 'python', process_face_script_dir],
+                {cwd: hair_ai_engine_dir})
 
-        pythonProcessFace.stdout.on('data', (data) => {
-            const outputData = data.toString().trim()
-            console.log(outputData)
-        })
+            pythonProcessFace.stdout.on('data', (data) => {
+                const outputData = data.toString().trim()
+                console.log(outputData)
+            })
 
-        pythonProcessFace.stderr.on('data', (data) => {
-            console.log(`Python script error: ${data}`)
-        })
+            pythonProcessFace.stderr.on('data', (data) => {
+                console.log(`Python script error: ${data}`)
+            })
 
-        pythonProcessFace.on('close', async (code) => {
-            console.log(`Python script exited with code ${code}`)
-            await cloudinary.uploader.upload(hairPath + '/' + file_name + '.png',
-                {folder: 'StyleYourHair', resource_type: 'auto', public_id: file_name},
-                async function (error, result) {
-                    if (error) {
-                        console.log(error)
-                    } else {
-                        // await util.DownloadImage(result.url, hairPath + '/' + file_name + '.png')
-                        req.body.Url = result.secure_url
-                        const NewHairStyle = new hairstyle(req.body);
-                        const HairStyleInsertData = await hairstyle.insertMany(NewHairStyle);
-                        if (!HairStyleInsertData) {
-                            throw new Error('Can not insert new hairstyle');
+            pythonProcessFace.on('close', async (code) => {
+                console.log(`Python script exited with code ${code}`)
+                await cloudinary.uploader.upload(hairPath + '/' + file_name + '.png',
+                    {folder: 'StyleYourHair', resource_type: 'auto', public_id: file_name},
+                    async function (error, result) {
+                        if (error) {
+                            console.log(error)
                         } else {
-                            return res.json({
-                                success: true,
-                                message: "inserted new hairstyle",
-                                hairstyle: HairStyleInsertData
-                            })
+                            // await util.DownloadImage(result.url, hairPath + '/' + file_name + '.png')
+                            req.body.Url = result.secure_url
+                            const NewHairStyle = new hairstyle(req.body);
+                            const HairStyleInsertData = await hairstyle.insertMany(NewHairStyle);
+                            if (!HairStyleInsertData) {
+                                throw new Error('Can not insert new hairstyle');
+                            } else {
+                                return res.json({
+                                    success: true,
+                                    message: "inserted new hairstyle",
+                                    hairstyle: HairStyleInsertData
+                                })
+                            }
                         }
                     }
-                }
-            )
-        })
-
-
+                )
+            })
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: 'invalid image type, accept .jpg, .jpeg, .png',
+            });
+        }
     } catch (error) {
         console.log(error)
         return res.status(404).send(error)
