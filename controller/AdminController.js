@@ -25,3 +25,79 @@ export function Login (req, res) {
         })
     })
 }
+
+export function CreateAdmin (req, res) {
+    let accessAdminId = req.body.AdminId || '';
+    let accessAdminRole = req.body.Role || '';
+    let accessAdminUserName = req.body.UserName || '';
+
+    let data = req.body || '';
+
+    AdminManagement.CreateAdmin(accessAdminId, accessAdminRole, accessAdminUserName, data, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+        if (errorCode) {
+            return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription)
+        }
+        let oResData = {};
+        oResData.id = result._id;
+        return Rest.SendSuccess(res, oResData, httpCode);
+    })
+}
+
+export function GetAllAdmin (req, res) {
+    let accessAdminId = req.query.AdminId || '';
+    let accessAdminRole = req.query.Role || '';
+    let accessAdminUserName = req.query.UserName || '';
+
+    AdminManagement.GetAllAdmin(accessAdminId, accessAdminRole, accessAdminUserName, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+        if (errorCode) {
+            return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription)
+        }
+        return Rest.SendSuccess(res, result, httpCode);
+    })
+
+}
+
+export function DeleteAdmin (req, res) {
+    let accessAdminId = req.body.AdminId || '';
+    let accessAdminRole = req.body.Role || '';
+    let accessAdminUserName = req.body.UserName || '';
+    let DeletingAdminId =  req.params.AdminId || '';
+
+    AdminManagement.DeleteAdmin(accessAdminId, accessAdminRole, accessAdminUserName, DeletingAdminId, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+        if (errorCode) {
+            return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription)
+        }
+        return Rest.SendSuccess(res, result, httpCode);
+    })
+}
+
+export function UpdateAdmin (req, res) {
+    let accessAdminId = req.body.AdminId || '';
+    let accessAdminRole = req.body.Role || '';
+    let accessAdminUserName = req.body.UserName || '';
+    let UpdatingAdminId =  req.params.AdminId || '';
+    let data = req.body || '';
+
+    AdminManagement.UpdateAdmin(accessAdminId, accessAdminRole, accessAdminUserName, UpdatingAdminId, data, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+        if (errorCode) {
+            return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription)
+        }
+        return Rest.SendSuccess(res, result, httpCode);
+    })
+}
+
+export function UpdateAdminPassword (req, res) {
+    let accessAdminId = req.body.AdminId || '';
+    let accessAdminRole = req.body.Role || '';
+    let accessAdminUserName = req.body.UserName || '';
+    let UpdatingAdminId =  req.params.AdminId || '';
+    let oldPassword = req.body.oldPassword || '';
+    let newPassword = req.body.newPassword || '';
+
+    AdminManagement.UpdateAdminPassword(accessAdminId, accessAdminRole, accessAdminUserName, UpdatingAdminId, oldPassword, newPassword, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+        if (errorCode) {
+            return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription)
+        }
+        return Rest.SendSuccess(res, result, httpCode);
+    })
+}

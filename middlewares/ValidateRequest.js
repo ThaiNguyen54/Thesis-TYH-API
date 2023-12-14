@@ -28,15 +28,14 @@ export function Validate (req, res, next) {
                     if (req.method === 'GET') {
                         req.query.AdminId = decoded.id;
                         req.query.Role = decoded.Role;
-                        req.query.Username = decoded.UserName;
+                        req.query.UserName = decoded.UserName;
                     } else {
                         req.body.AdminId = decoded.id;
                         req.body.Role = decoded.Role;
-                        req.body.Username = decoded.UserName;
+                        req.body.UserName = decoded.UserName;
                     }
                     next()
                 })
-
             })
         } catch (error) {
             return Rest.SendError(res, 4170, 'system', 400, error);

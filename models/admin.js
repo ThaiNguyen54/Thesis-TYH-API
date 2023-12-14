@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {ROLE} from "../configs/Global.js";
 
 const AdminDBSchema = new mongoose.Schema({
     UserName: {
@@ -10,12 +11,29 @@ const AdminDBSchema = new mongoose.Schema({
         required: true
     },
     Role: {
-        type: String,
-        required: true
+        type: Number,
+        default: ROLE.ADMIN
     },
     DisplayName: {
         type: String,
         required: true
+    },
+    AvatarUrl: {
+        type: String
+    },
+    CreatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+    },
+    CreatedAt: {
+        type: Date,
+        default: Date.now()
+    },
+    UpdatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+    },
+    UpdatedAt: {
+        type: Date,
+        default: Date.now()
     }
 }, {
     collection: "Admin",
