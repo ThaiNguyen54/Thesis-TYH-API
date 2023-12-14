@@ -290,108 +290,104 @@ export async function SetTrending(req, res) {
 }
 
 export async function UpdateHairstyle(req, res) {
-    let id = req.params.HairstyleID || '';
-    let data = req.body || '';
-    let old_name = req.body.old_name
-    const isUpdateImage = req.body.isUpdateImage || 'false'
-    const updateData = JSON.parse(req.body.update)
-    console.log(req)
-    // console.log(req.body)
-    // console.log(isUpdateImage)
+    try {
+        let id = req.params.HairstyleID || '';
+        let data = req.body || '';
+        let old_name = req.body.old_name
+        const isUpdateImage = req.body.isUpdateImage || 'false'
+        const updateData = JSON.parse(req.body.update)
+        if (updateData.Name !== undefined) {
+            fs.renameSync(hairPath + '/' + old_name + '.png', hairPath + '/' + updateData.Name + '.png')
+        }
 
-    if (updateData.Name !== undefined) {
-        fs.renameSync(hairPath + '/' + old_name + '.png', hairPath + '/' + updateData.Name + '.png')
-    }
-
-    if (isUpdateImage === 'true') {
-        try {
-            const b64 = Buffer.from(req.file.buffer).toString('base64')
-            let buffer = new Buffer(b64, 'base64')
-            let dataURI = 'data:' + req.file.mimetype + ';base64,' + b64
-            // let file_name = util.removeExtension(req.file.originalname)
-            let file_name = old_name
-            let name_for_saving = file_name
-            if (updateData.Name !== undefined) {
-               name_for_saving = updateData.Name
-            }
-            fs.writeFileSync(unprocessed_dir + '/' + name_for_saving + '.png', buffer, (error) => {
-                if (error) {
-                    console.log(error)
-                } else {
-                    console.log('saved')
+        if (isUpdateImage === 'true') {
+            try {
+                const b64 = Buffer.from(req.file.buffer).toString('base64')
+                let buffer = new Buffer(b64, 'base64')
+                let dataURI = 'data:' + req.file.mimetype + ';base64,' + b64
+                // let file_name = util.removeExtension(req.file.originalname)
+                let file_name = old_name
+                let name_for_saving = file_name
+                if (updateData.Name !== undefined) {
+                    name_for_saving = updateData.Name
                 }
-            })
-
-            const pythonProcessFace = spawn(
-                'conda',
-                ['run', '-n', conda_env, 'python', process_face_script_dir],
-                {cwd: hair_ai_engine_dir})
-
-            pythonProcessFace.stderr.on('data', (data) => {
-                console.log(`Python script error: ${data}`)
-            })
-
-            pythonProcessFace.on('close', async (code) => {
-                console.log(`Python script exited with code ${code}`)
-                await cloudinary.uploader.upload(hairPath + '/' + name_for_saving + '.png',
-                    {folder: 'StyleYourHair', resource_type: 'auto', public_id: name_for_saving},
-                    async function (error, result) {
-                        if (error) {
-                            console.log(error)
-                        } else {
-                            updateData.Url = result.secure_url
-                            let image_path = hairPath + '/' + file_name + '.png'
-                            console.log(image_path)
-                            if (fs.existsSync(image_path)) {
-                                await fs.unlink(image_path, (err) => {
-                                    if (err) {
-                                        console.log(err)
-                                        return res.send({
-                                            message: err.message
-                                        })
-                                    }
-                                })
-                                console.log('File deleted successfully')
-                            } else {
-                                console.log('File not found')
-                            }
-
-                            await util.DownloadImage(result.secure_url, image_path)
-
-                            HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
-                                if (errorCode) {
-                                    return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
-                                }
-                                let outResultData = {};
-                                outResultData.id = result._id;
-                                return Rest.SendSuccess(res, outResultData, httpCode, 'Updated a hairstyle');
-                            })
-                        }
+                fs.writeFileSync(unprocessed_dir + '/' + name_for_saving + '.png', buffer, (error) => {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                        console.log('saved')
                     }
-                )
-            })
-            // const cldRes = await handleUpload(dataURI, file_name)
-            // updateData.Url = cldRes.secure_url
+                })
 
-        } catch (error) {
-            return res.send({
-                message: error.message
+                const pythonProcessFace = spawn(
+                    'conda',
+                    ['run', '-n', conda_env, 'python', process_face_script_dir],
+                    {cwd: hair_ai_engine_dir})
+
+                pythonProcessFace.stderr.on('data', (data) => {
+                    console.log(`Python script error: ${data}`)
+                })
+
+                pythonProcessFace.on('close', async (code) => {
+                    console.log(`Python script exited with code ${code}`)
+                    await cloudinary.uploader.upload(hairPath + '/' + name_for_saving + '.png',
+                        {folder: 'StyleYourHair', resource_type: 'auto', public_id: name_for_saving},
+                        async function (error, result) {
+                            if (error) {
+                                console.log(error)
+                            } else {
+                                updateData.Url = result.secure_url
+                                let image_path = hairPath + '/' + file_name + '.png'
+                                console.log(image_path)
+                                if (fs.existsSync(image_path)) {
+                                    await fs.unlink(image_path, (err) => {
+                                        if (err) {
+                                            console.log(err)
+                                            return res.send({
+                                                message: err.message
+                                            })
+                                        }
+                                    })
+                                    console.log('File deleted successfully')
+                                } else {
+                                    console.log('File not found')
+                                }
+
+                                await util.DownloadImage(result.secure_url, image_path)
+
+                                HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+                                    if (errorCode) {
+                                        return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
+                                    }
+                                    let outResultData = {};
+                                    outResultData.id = result._id;
+                                    return Rest.SendSuccess(res, outResultData, httpCode, 'Updated a hairstyle');
+                                })
+                            }
+                        }
+                    )
+                })
+            } catch (error) {
+                return res.send({
+                    message: error.message
+                })
+            }
+        }
+
+        if (isUpdateImage === 'false') {
+            HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+                if (errorCode) {
+                    return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
+                }
+                let outResultData = {};
+                outResultData.id = result._id;
+                return Rest.SendSuccess(res, outResultData, httpCode, 'Updated a hairstyle');
             })
         }
+    } catch (error) {
+        console.log(error)
+        return Rest.SendError(res, 8, 'update_hairstyle_fail', 500, error.message, error);
     }
-
-    if (isUpdateImage === 'false') {
-        HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
-            if (errorCode) {
-                return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            let outResultData = {};
-            outResultData.id = result._id;
-            return Rest.SendSuccess(res, outResultData, httpCode, 'Updated a hairstyle');
-        })
-    }
-
-    // console.log(updateData)
 }
 
 

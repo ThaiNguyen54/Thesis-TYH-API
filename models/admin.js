@@ -8,6 +8,14 @@ const AdminDBSchema = new mongoose.Schema({
     Password: {
         type: String,
         required: true
+    },
+    Role: {
+        type: String,
+        required: true
+    },
+    DisplayName: {
+        type: String,
+        required: true
     }
 }, {
     collection: "Admin",

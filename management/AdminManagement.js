@@ -36,3 +36,36 @@ export function Authenticate (UserName, Password, callback){
         return callback(8, 'authenticate failed', 400, error, null)
     }
 }
+
+export function VerifyAdmin (AdminId, Role, UserName, callback) {
+    try {
+        if (!util.VariableTypeChecker(AdminId, 'string')
+        && !util.VariableTypeChecker(AdminId, 'number')) {
+            return (1, 'invalid_admin_id', 400, 'admin id is incorrect', null);
+        }
+
+        if (!util.VariableTypeChecker(UserName, 'string')) {
+            return (1, 'invalid_username', 400, 'username is incorrect', null);
+        }
+
+        let where = {_id: AdminId, UserName: UserName, Role: Role}
+        let attributes = ['_id', 'UserName', 'Role']
+
+        Admin.findOne({
+            where: where,
+            attributes: attributes
+        }).then(result => {
+            "use strict"
+            if (result) {
+                return callback(null, null, 200, null, result)
+            } else {
+                return callback(1, 'invalid_admin', 405, null, null)
+            }
+        }).catch(function (error) {
+            "use strict"
+            return callback(1, 'find_admin_fail', 400, error, null)
+        })
+    } catch (error) {
+        return callback(1, 'find_admin_fail', 400, error, null)
+    }
+}

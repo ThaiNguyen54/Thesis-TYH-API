@@ -8,6 +8,7 @@ import hairstyleroute from './route/HairStyleRoute.js'
 import fs from "fs";
 import AdminRoute from "./route/AdminRoute.js";
 import Admin from "./models/admin.js";
+import {Validate} from "./middlewares/ValidateRequest.js";
 
 const app = express()
 
@@ -30,6 +31,7 @@ const corsOption = {
     'optionsSuccessStatus': 200,
 };
 app.use(cors(corsOption))
+app.all('/shair-engine/ver1/auth/*', [Validate])
 
 app.use(hairstyleroute)
 app.use(AdminRoute)

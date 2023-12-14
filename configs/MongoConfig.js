@@ -8,7 +8,6 @@ let mongoConnection = {
     appname: 'Try Your Hair',
     port: process.env.PORT || 3000,
     url: APIROOT_URL,
-    authenticationkey: '2TTeam',
     path: {
         public: '/public',
         tmp: '/tmp',

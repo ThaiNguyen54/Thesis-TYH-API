@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import JsonWebTokenError from "jsonwebtoken";
 import * as Rest from '../utils/Rest.js'
 import MongoConfig from "../configs/MongoConfig.js";
+import * as GlobalConfig from "../configs/Global.js"
+
 export function Login (req, res) {
     let UserName = req.body.UserName || ''
     let Password = req.body.Password || ''
@@ -13,7 +15,7 @@ export function Login (req, res) {
             return Rest.SendError(res, ErrorCode, ErrorMess, httpCode, ErrorDescription)
         }
 
-        JsonWebTokenError.sign({id: admin._id, UserName: admin.UserName}, MongoConfig.authenticationkey, {expiresIn: '10 days'}, function (error, token) {
+        JsonWebTokenError.sign({id: admin._id, UserName: admin.UserName, DisplayName: admin.DisplayName, Role: admin.Role}, GlobalConfig.JWTPublicKey.PublicKey, {expiresIn: '10 days'}, function (error, token) {
             if (error) {
                 return Rest.SendError(res, 1, 'Creating Token Failed', 400, error)
             } else {
