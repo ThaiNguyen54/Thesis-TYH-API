@@ -25,7 +25,7 @@ export function Validate (req, res, next) {
                     if (errorCode) {
                         return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
                     }
-                    if (req.method === 'GET') {
+                    if (req.method === 'GET' || req.method === 'POST') {
                         req.query.AdminId = decoded.id;
                         req.query.Role = decoded.Role;
                         req.query.UserName = decoded.UserName;

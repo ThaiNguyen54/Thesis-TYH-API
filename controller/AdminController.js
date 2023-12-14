@@ -27,12 +27,13 @@ export function Login (req, res) {
 }
 
 export function CreateAdmin (req, res) {
-    let accessAdminId = req.body.AdminId || '';
-    let accessAdminRole = req.body.Role || '';
-    let accessAdminUserName = req.body.UserName || '';
+    let accessAdminId = req.query.AdminId || '';
+    let accessAdminRole = req.query.Role || '';
+    let accessAdminUserName = req.query.UserName || '';
 
     let data = req.body || '';
 
+    console.log(data)
     AdminManagement.CreateAdmin(accessAdminId, accessAdminRole, accessAdminUserName, data, function (errorCode, errorMessage, httpCode, errorDescription, result) {
         if (errorCode) {
             return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription)
@@ -87,6 +88,7 @@ export function UpdateAdmin (req, res) {
 }
 
 export function UpdateAdminPassword (req, res) {
+    console.log('ok')
     let accessAdminId = req.body.AdminId || '';
     let accessAdminRole = req.body.Role || '';
     let accessAdminUserName = req.body.UserName || '';
