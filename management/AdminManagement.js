@@ -2,6 +2,10 @@ import * as util from '../utils/UtilFunctions.js'
 import Admin from "../models/admin.js";
 import bcrypt from 'bcryptjs'
 import {ROLE} from "../configs/Global.js";
+import { v2 as cloudinary } from 'cloudinary'
+import CloudinaryConfig from "../configs/CloudinaryConfig.js";
+
+cloudinary.config(CloudinaryConfig)
 
 export function Authenticate (UserName, Password, callback){
     try {
@@ -168,8 +172,9 @@ export function DeleteAdmin (accessAdminId, accessAdminRole, accessAdminUserName
     }
 }
 
-export function UpdateAdmin (accessAdminId, accessAdminRole, accessAdminUserName, UpdatingAdminID, UpdateData, callback) {
+export async function UpdateAdmin(accessAdminId, accessAdminRole, accessAdminUserName, UpdatingAdminID, UpdateData, callback) {
     try {
+
         if (accessAdminRole !== ROLE.SUPER_ADMIN && accessAdminRole !== ROLE.ADMIN) {
             return callback(8, 'invalid_role', 403, 'you have no right to perform this action', null);
         }
@@ -187,26 +192,34 @@ export function UpdateAdmin (accessAdminId, accessAdminRole, accessAdminUserName
             update.DisplayName = UpdateData.DisplayName
         }
 
+        if (UpdateData.AvatarUrl !== undefined && UpdateData.AvatarUrl !== null && UpdateData !== '') {
+            const res = await cloudinary.uploader.upload(UpdateData.AvatarUrl, {
+                resource_type: 'auto',
+                folder: 'tyh-admin'
+            })
+            update.AvatarUrl = res.secure_url
+        }
+
+
         update.UpdatedBy = accessAdminId;
         update.UpdatedAt = Date.now();
 
         Admin.findOne(query, function (error, admin) {
             if (error) {
-               return callback(8, 'update_admin_fail', 420, error)
-            }
-            else {
+                return callback(8, 'update_admin_fail', 420, error)
+            } else {
                 if (admin) {
                     if (accessAdminUserName !== admin.UserName && accessAdminRole !== ROLE.SUPER_ADMIN) {
                         return callback(8, 'privacy_error', 403, 'you cannot modify information of other admins', null);
                     }
 
-                    Admin.findOneAndUpdate(query, update, option,function (error, updatedAdmin) {
+                    Admin.findOneAndUpdate(query, update, option, function (error, updatedAdmin) {
                         if (error) {
                             return callback(8, 'update_admin_fail', 420, error)
                         }
 
                         if (updatedAdmin) {
-                            return callback(null, null, 200, null, updatedAdmin._id)
+                            return callback(null, null, 200, null, updatedAdmin)
                         } else {
                             return callback(8, 'unavailable', 400, null, null)
                         }
@@ -214,6 +227,7 @@ export function UpdateAdmin (accessAdminId, accessAdminRole, accessAdminUserName
                 }
             }
         })
+
     } catch (error) {
         return callback(1, 'update_admin_fail', 400, error, null)
     }

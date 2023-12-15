@@ -19,7 +19,8 @@ const AdminDBSchema = new mongoose.Schema({
         required: true
     },
     AvatarUrl: {
-        type: String
+        type: String,
+        default: 'https://res.cloudinary.com/dkwihofta/image/upload/v1702609512/tyh-admin/default-avatar_bsntu0.jpg'
     },
     CreatedBy: {
         type: mongoose.Schema.Types.ObjectId,
