@@ -88,7 +88,6 @@ export function UpdateAdmin (req, res) {
 }
 
 export function UpdateAdminPassword (req, res) {
-    console.log('ok')
     let accessAdminId = req.body.AdminId || '';
     let accessAdminRole = req.body.Role || '';
     let accessAdminUserName = req.body.UserName || '';
