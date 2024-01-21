@@ -22,6 +22,20 @@ const HairStyleSchema = new mongoose.Schema({
     },
     Category: {
         type: String
+    },
+    CreatedAt: {
+        type: Date,
+        default: Date.now()
+    },
+    UpdatedAt: {
+        type: Date,
+        default: Date.now()
+    },
+    CreatedBy: {
+        type: Schema.Types.ObjectId
+    },
+    UpdatedBy: {
+        type: Schema.Types.ObjectId
     }
 }, {
     collection: 'HairStyle',

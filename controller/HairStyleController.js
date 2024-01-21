@@ -198,6 +198,8 @@ export async function AddHairStyle(req, res) {
                         } else {
                             // await util.DownloadImage(result.url, hairPath + '/' + file_name + '.png')
                             req.body.Url = result.secure_url
+                            req.body.CreatedBy = req.query.AdminId
+                            req.body.UpdatedBy = req.query.AdminId
                             const NewHairStyle = new hairstyle(req.body);
                             const HairStyleInsertData = await hairstyle.insertMany(NewHairStyle);
                             if (!HairStyleInsertData) {
@@ -376,8 +378,9 @@ export async function UpdateHairstyle(req, res) {
                                 }
 
                                 await util.DownloadImage(result.secure_url, image_path)
+                                let AdminId = req.body.AdminId
 
-                                HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+                                HairstyleManagement.Update(id, AdminId, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
                                     if (errorCode) {
                                         return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
                                     }
@@ -397,7 +400,9 @@ export async function UpdateHairstyle(req, res) {
         }
 
         if (isUpdateImage === 'false') {
-            HairstyleManagement.Update(id, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
+            let AdminId = req.body.AdminId
+
+            HairstyleManagement.Update(id, AdminId, updateData, function (errorCode, errorMessage, httpCode, errorDescription, result) {
                 if (errorCode) {
                     return Rest.SendError(res, errorCode, errorMessage, httpCode, errorDescription);
                 }

@@ -30,7 +30,7 @@ export function Delete (HairstyleID, callback) {
     }
 }
 
-export function Update (HairstyleID, UpdateData, callback) {
+export function Update (HairstyleID, AdminId, UpdateData, callback) {
     try {
         let query = {_id: HairstyleID};
         HairStyle.findOne(query, function (error, hairstyle) {
@@ -59,6 +59,8 @@ export function Update (HairstyleID, UpdateData, callback) {
                  if (util.VariableTypeChecker(UpdateData.Category, 'string')) {
                      update.Category = UpdateData.Category
                  }
+                 update.UpdatedBy = AdminId
+                 update.UpdatedAt = Date.now()
 
                  HairStyle.findOneAndUpdate(query, update, options, function (error, updatedHairstyle) {
                      if (error) {
