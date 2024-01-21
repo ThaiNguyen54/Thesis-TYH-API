@@ -13,7 +13,6 @@ const HairStyleSchema = new mongoose.Schema({
     },
     Des: {
         type: String,
-        required: true
     },
     Trending: {
         type: Number

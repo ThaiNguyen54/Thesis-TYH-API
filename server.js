@@ -48,10 +48,9 @@ https.createServer({
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
 },app)
-    .listen(port, () => {
+    .listen(port,'0.0.0.0', () => {
         console.log(`Server is running on port ${port}`)
     })
-
 
 // app.listen(port, () => {
 //     console.log(`Server is running on port ${port}`)

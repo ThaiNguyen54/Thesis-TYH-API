@@ -27,8 +27,8 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
 })
-// const conda_env = 'shair'
-const conda_env = 'thesis-env'
+const conda_env = 'shair'
+// const conda_env = 'thesis-env'
 const hairPath = '../Hair-AI-Engine/StyleYourHair/ffhq_image'
 const generatedHairPath = resolve('../Hair-AI-Engine/StyleYourHair/style_your_hair_output')
 const unprocessed_dir = resolve('../Hair-AI-Engine/StyleYourHair/unprocessed')
@@ -159,8 +159,6 @@ async function UploadImage(req, res) {
     }
 }
 
-
-
 export async function AddHairStyle(req, res) {
     try {
         if (Constant.ALLOWED_IMAGE_TYPE.includes(req.file.mimetype)) {
@@ -168,6 +166,7 @@ export async function AddHairStyle(req, res) {
             let buffer = new Buffer(b64, 'base64')
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64
             let file_name = util.removeExtension(req.body.Name)
+            file_name = file_name.trim()
             fs.writeFileSync(unprocessed_dir + '/' + file_name + '.png', buffer, (error) => {
                 if (error) {
                     console.log(error)
@@ -247,6 +246,30 @@ export function GetAllHairStyle(req, res) {
         })
 }
 
+export function GetHairStyleBasedOnCategory(req, res) {
+    let category = req.params.Category
+    hairstyle.find({
+        Category: category
+    })
+        .then(allHairStyle => {
+            return res.status(200).json({
+                success: true,
+                message: 'List of all hairstyle',
+                Hairstyles: allHairStyle
+            });
+        })
+        .catch((error) => {
+            return (
+                res.status(500).json({
+                    success: false,
+                    code: 8,
+                    message: 'Can not get hairstyles. Please try again.',
+                    description: error.message
+                })
+            )
+        })
+}
+
 export function DeleteHairstyle (req, res) {
     let HairstyleID = req.params.HairstyleID || '';
     HairstyleManagement.Delete(HairstyleID, function (errorCode, errorMessage, httpCode, errorDescription) {
@@ -284,9 +307,6 @@ export async function SetTrending(req, res) {
             })
         )
     }
-
-
-
 }
 
 export async function UpdateHairstyle(req, res) {
@@ -307,7 +327,9 @@ export async function UpdateHairstyle(req, res) {
                 let dataURI = 'data:' + req.file.mimetype + ';base64,' + b64
                 // let file_name = util.removeExtension(req.file.originalname)
                 let file_name = old_name
+                file_name = file_name.trim()
                 let name_for_saving = file_name
+                name_for_saving = name_for_saving.trim()
                 if (updateData.Name !== undefined) {
                     name_for_saving = updateData.Name
                 }
